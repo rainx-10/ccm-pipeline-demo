@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Invoice</title>
+    <style>
+        body { font-family: sans-serif; color: #222; font-size: 12px; }
+        .header { border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px; }
+        .header h1 { margin: 0; font-size: 22px; }
+        .meta { margin-bottom: 16px; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ccc; }
+        th { background-color: #f0f0f0; }
+        .amount { text-align: right; }
+        .total-row td { font-weight: bold; border-top: 2px solid #333; border-bottom: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Invoice</h1>
+    </div>
+    <div class="meta">
+        <div>Bill to: <span th:text="${customer.name}">Name</span></div>
+        <div>Account: <span th:text="${customer.id}">ID</span></div>
+        <div>Email: <span th:text="${customer.email}">email</span></div>
+        <div>Due date: <span th:text="${customer.dueDate}">date</span></div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="amount">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${customer.items}">
+                <td th:text="${item.description}">Item</td>
+                <td class="amount" th:text="${'EUR ' + #numbers.formatDecimal(item.price, 1, 'NONE', 2, 'POINT')}">EUR 0.00</td>
+            </tr>
+            <tr class="total-row">
+                <td>Total</td>
+                <td class="amount" th:text="${'EUR ' + #numbers.formatDecimal(customer.total, 1, 'NONE', 2, 'POINT')}">EUR 0.00</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

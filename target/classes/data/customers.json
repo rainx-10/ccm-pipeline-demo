@@ -1,0 +1,21 @@
+[
+  {
+    "id": "C-1001",
+    "name": "Aisha Khan",
+    "email": "aisha.khan@example.com",
+    "dueDate": "2026-08-15",
+    "items": [
+      { "description": "Monthly service plan", "price": 199.90 },
+      { "description": "Usage overage", "price": 50.00 }
+    ]
+  },
+  {
+    "id": "C-1002",
+    "name": "Tom de Vries",
+    "email": "tom.devries@example.com",
+    "dueDate": "2026-08-15",
+    "items": [
+      { "description": "Basic plan", "price": 89.00 }
+    ]
+  }
+]
