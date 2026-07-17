@@ -1,0 +1,42 @@
+# GitLab CI/CD pipeline — mirrors the Jenkins pipeline in this repo.
+# Same workflow (build/test -> dev -> manual approval -> prod), expressed in GitLab CI.
+
+stages:
+  - build-test
+  - deploy-dev
+  - promote-prod
+
+variables:
+  IMAGE: ccm-generator
+
+# Use Docker-in-Docker so jobs can run `docker build`.
+# This is GitLab's equivalent of mounting the Docker socket into Jenkins.
+default:
+  image: docker:27
+  services:
+    - docker:27-dind
+
+build-test:
+  stage: build-test
+  script:
+    # The multi-stage Dockerfile compiles the code and runs the unit tests inside it.
+    # A failing test fails the image build, which fails this job.
+    - docker build -t $IMAGE:$CI_PIPELINE_IID .
+
+deploy-dev:
+  stage: deploy-dev
+  script:
+    - echo "Deploying to DEV environment"
+    - docker build -t $IMAGE:$CI_PIPELINE_IID .
+    - docker run --rm $IMAGE:$CI_PIPELINE_IID
+
+promote-prod:
+  stage: promote-prod
+  script:
+    - echo "Promoting to PROD environment"
+    - docker build -t $IMAGE:$CI_PIPELINE_IID .
+    - docker tag $IMAGE:$CI_PIPELINE_IID $IMAGE:prod
+    - echo "Current build is now tagged as prod"
+  # This makes the job manual — the pipeline pauses until someone clicks "play".
+  # It's the GitLab equivalent of the Jenkins `input` approval gate.
+  when: manual
