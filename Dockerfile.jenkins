@@ -1,0 +1,10 @@
+FROM jenkins/jenkins:lts
+USER root
+# Add the Docker CLI so pipelines can run `docker build` / `docker run`.
+# This is only the client — it talks to the host Docker engine via the mounted socket.
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
+    curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-27.3.1.tgz -o docker.tgz && \
+    tar xzvf docker.tgz --strip-components=1 -C /usr/local/bin docker/docker && \
+    rm docker.tgz && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+USER jenkins
